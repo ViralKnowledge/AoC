@@ -1,6 +1,6 @@
 module Main where
 
-import Day11 as D11
+import Day12 as D12
 
 main :: IO ()
-main = D11.run
+  main = D12.run
