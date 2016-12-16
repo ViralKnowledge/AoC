@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Lib, Day11
+  exposed-modules:     Lib, Day14
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , base16-bytestring
