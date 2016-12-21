@@ -1,4 +1,4 @@
-module Day11 (run) where
+module Day11 (run, moves) where
 
 import Prelude hiding (zip)
 
@@ -35,12 +35,12 @@ getMove :: Move -> Int
 getMove (Move m) = m
 
 moves :: [Move]
-moves = nub $ Move <$> ((+) <$> bs <*> bs)
+moves = nub $ Move <$> ((.|.) <$> bs <*> bs)
   where
     bs = shift 1 <$> [0..(floorSize * 2 - 1)]
 
 validMove :: State -> (Int, Move) -> Bool
-validMove s m = ((from `xor` m') .&. m' == 0) && (all id $ map validFloor fc')
+validMove s m = ((from `xor` m') .&. m' == 0) && (validFloor (fc' !! f) && validFloor (fc' !! f'))
   where
     moved = doMove s m
     (State f fc _) = s
@@ -50,7 +50,7 @@ validMove s m = ((from `xor` m') .&. m' == 0) && (all id $ map validFloor fc')
     moveMask = from `xor` m'
 
 validFloor :: Int -> Bool
-validFloor f = f > 0 && fm - fg <= 0 || fg == 0
+validFloor f = fg == 0 || ((fm `xor` fg) .&. fm == 0)
   where
     fg = shift f (-floorSize)
     fm = f .&. (shift 1 floorSize - 1)
@@ -68,14 +68,12 @@ doMove s (i, (Move m)) = State i (fc & ix e -~ m & ix i +~ m) (p + 1)
     (State e fc p) = s
 
 checkState :: State -> Bool
-checkState (State _ fc _) = last fc == (shift 1 iMax - 1) && sum (init fc) == 0
-  where
-    iMax = floorSize * 2
+checkState (State _ fc _) = last fc == (shift 1 (floorSize * 2) - 1)
 
 putMaybe :: (a -> Bool) -> a -> Maybe a
 putMaybe f a = if f a then Just a else Nothing
 
--- emptyState = State 0 (bin2dec <$> ["1111111010", "0000000101", "0000000000", "0000000000"]) 0
+-- emptyState = State 0 (bin2dec <$> ["1111111010", "0000000101",      "0000000000",     "0000000000"]) 0
 emptyState = State 0 (bin2dec <$> ["11111111111010", "00000000000101", "00000000000000", "00000000000000"]) 0
 floorSize = 7
 
@@ -96,7 +94,7 @@ solve (ss, (DSQ.viewl -> (s DSQ.:< sms)))
       nextStates = DSQ.zipWith doMove (DSQ.replicate (length nextMoves) s) (DSQ.fromList nextMoves)
       nextMoves = validMoves s
     in
-      solve (foldr DSE.insert ss nextStates, sms DSQ.>< (DSQ.filter (\s' -> (not $ DSE.member s' ss)) $ nextStates))
+      solve (foldr DSE.insert ss nextStates, sms DSQ.>< ((DSQ.filter (not . flip DSE.member ss) nextStates)))
 
 run = do
   getCurrentTime >>= print

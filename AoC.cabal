@@ -1,5 +1,5 @@
 name:                AoC
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Initial project template from stack
 description:         Please see README.md
 homepage:            https://github.com/githubuser/AoC#readme
@@ -15,11 +15,11 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Lib, Day14
+  exposed-modules:     Lib, Day21
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , base16-bytestring
-                     , containers >= 0.5
+                     , containers >= 0.5.8.1
                      , cryptohash
                      , lens
                      , parsec
