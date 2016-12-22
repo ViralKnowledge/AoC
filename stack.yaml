@@ -11,6 +11,7 @@ packages:
 extra-deps:
 - 'containers-0.5.8.1'
 - 'lens-4.15.1'
+- 'astar-0.3.0.0'
 
 # Override default flag values for local packages and extra-deps
 flags: {}
